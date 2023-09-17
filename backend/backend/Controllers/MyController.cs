@@ -41,6 +41,21 @@ public class MyController : ControllerBase
         return Ok(parents);
     }
     
+    [Route("person/{name}/kids")]
+    public ActionResult<ICollection<Person>> GetPersonKids(string name)
+    {
+        var person = _context.Persons.FirstOrDefault(x => x.FullName == name);
+
+        if (person == null)
+        {
+            throw new Exception("Person not found");
+        }
+        
+        var kids = _context.Persons.Where(x => x.Mother == name || x.Father == name);
+
+        return Ok(kids);
+    }
+    
     [Route("person/{name}/grandparents")]
     public ActionResult<ICollection<Person>> GetPersonGrandParents(string name)
     {
