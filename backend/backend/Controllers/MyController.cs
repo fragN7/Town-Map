@@ -13,12 +13,14 @@ public class MyController : ControllerBase
         _context = context;
     }
     
+    [HttpGet]
     [Route("person/{name}")]
     public ActionResult<Person> GetPerson(string name)
     {
         return Ok(_context.Persons.FirstOrDefault(x => x.FullName == name));
     }
     
+    [HttpGet]
     [Route("person/{name}/parents")]
     public ActionResult<ICollection<Person>> GetPersonParents(string name)
     {
@@ -41,6 +43,7 @@ public class MyController : ControllerBase
         return Ok(parents);
     }
     
+    [HttpGet]
     [Route("person/{name}/kids")]
     public ActionResult<ICollection<Person>> GetPersonKids(string name)
     {
@@ -56,6 +59,7 @@ public class MyController : ControllerBase
         return Ok(kids);
     }
     
+    [HttpGet]
     [Route("person/{name}/grandparents")]
     public ActionResult<ICollection<Person>> GetPersonGrandParents(string name)
     {
@@ -87,7 +91,7 @@ public class MyController : ControllerBase
         return Ok(grandParents);
     }
     
-    
+    [HttpGet]
     [Route("person/{name}/siblings")]
     public ActionResult<ICollection<Person>> GetPersonSiblings(string name)
     {
@@ -101,11 +105,19 @@ public class MyController : ControllerBase
         var mother = _context.Persons.FirstOrDefault(x => x.FullName == person.Mother);
         var father = _context.Persons.FirstOrDefault(x => x.FullName == person.Father);
 
-        var siblings = _context.Persons.Where(x => x.Mother == mother!.FullName && x.Father == father!.FullName);
+        var siblings = IQueryable<Person>();
+        
+        if (mother != null)
+        {
+             siblings = _context.Persons.Where(x => x.Mother == mother.FullName);
+        }
+
+        
 
         return Ok(siblings);
     }
     
+    [HttpGet]
     [Route("person/{name}/cousins/first")]
     public ActionResult<ICollection<Person>> GetPersonFirstCousins(string name)
     {
