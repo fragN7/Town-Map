@@ -166,27 +166,30 @@ public class MyController : ControllerBase
         var persons = _context.Persons.ToList();
         foreach (var people in persons)
         {
-            Person? peopleMotherGrandMother = null;
-            Person? peopleMotherGrandFather = null;
-            Person? peopleFatherGrandMother = null;
-            Person? peopleFatherGrandFather = null;
-            
             var peopleMother = _context.Persons.FirstOrDefault(x => x.FullName == people.Mother);
 
             if (peopleMother != null)
             {
-                peopleMotherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == peopleMother.Mother);
-                peopleMotherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == peopleMother.Father);
-                
-                
+                var peopleMotherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == peopleMother.Mother);
+                var peopleMotherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == peopleMother.Father);
+
+                if (peopleMotherGrandMother!.FullName == motherGrandMother!.FullName || peopleMotherGrandFather!.FullName == motherGrandFather!.FullName)
+                {
+                    cousins.Add(people);
+                }
             }
         
             var peopleFather = _context.Persons.FirstOrDefault(x => x.FullName == people.Father);
 
             if (peopleFather != null)
             {
-                peopleFatherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == peopleFather.Mother)!;
-                peopleFatherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == peopleFather.Father)!;
+                var peopleFatherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == peopleFather.Mother)!;
+                var peopleFatherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == peopleFather.Father)!;
+                
+                if (peopleFatherGrandMother!.FullName == fatherGrandMother!.FullName || peopleFatherGrandFather!.FullName == fatherGrandFather!.FullName)
+                {
+                    cousins.Add(people);
+                }
             }
         }
         
