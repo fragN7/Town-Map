@@ -93,7 +93,7 @@ public class MyController : ControllerBase
     
     [HttpGet]
     [Route("person/{name}/siblings")]
-    public ActionResult<ICollection<Person>> GetPersonSiblings(string name)
+    public ActionResult<IEnumerable<Person>> GetPersonSiblings(string name)
     {
         var person = _context.Persons.FirstOrDefault(x => x.FullName == name);
 
@@ -101,25 +101,37 @@ public class MyController : ControllerBase
         {
             throw new Exception("Person not found");
         }
-        
+
         var mother = _context.Persons.FirstOrDefault(x => x.FullName == person.Mother);
         var father = _context.Persons.FirstOrDefault(x => x.FullName == person.Father);
 
-        var siblings = IQueryable<Person>();
-        
-        if (mother != null)
+        IEnumerable<Person> siblings;
+
+        if (mother != null && father == null)
         {
-             siblings = _context.Persons.Where(x => x.Mother == mother.FullName);
+            siblings = _context.Persons.Where(x => x.Mother == mother.FullName);
+        }
+        else if (father != null && mother == null)
+        {
+            siblings = _context.Persons.Where(x => x.Father == father.FullName);
+        }
+        else if (mother == null && father == null)
+        {
+            siblings = _context.Persons.Where(x => x.FullName == "test");
+        }
+        else
+        {
+            siblings = _context.Persons.Where(x => x.Father == father!.FullName && x.Mother == mother!.FullName);
         }
 
-        
+        siblings = siblings.Where(x => x.FullName != name);
 
         return Ok(siblings);
     }
-    
+
     [HttpGet]
     [Route("person/{name}/cousins/first")]
-    public ActionResult<ICollection<Person>> GetPersonFirstCousins(string name)
+    public ActionResult<IEnumerable<Person>> GetPersonFirstCousins(string name)
     {
         var person = _context.Persons.FirstOrDefault(x => x.FullName == name);
 
@@ -127,19 +139,59 @@ public class MyController : ControllerBase
         {
             throw new Exception("Person not found");
         }
+
+        var cousins = new List<Person>();
         
+        Person? motherGrandMother = null;
+        Person? motherGrandFather = null;
+        Person? fatherGrandMother = null;
+        Person? fatherGrandFather = null;
+
         var mother = _context.Persons.FirstOrDefault(x => x.FullName == person.Mother);
-        
-        var motherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == mother!.Mother);
-        var motherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == mother!.Father);
 
+        if (mother != null)
+        {
+            motherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == mother.Mother);
+            motherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == mother.Father);
+        }
+        
         var father = _context.Persons.FirstOrDefault(x => x.FullName == person.Father);
-        
-        var fatherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == father!.Mother);
-        var fatherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == father!.Father);
 
-        var cousins = string.Empty;
+        if (father != null)
+        {
+            fatherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == father.Mother);
+            fatherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == father.Father);
+        }
+
+        var persons = _context.Persons.ToList();
+        foreach (var people in persons)
+        {
+            Person? peopleMotherGrandMother = null;
+            Person? peopleMotherGrandFather = null;
+            Person? peopleFatherGrandMother = null;
+            Person? peopleFatherGrandFather = null;
+            
+            var peopleMother = _context.Persons.FirstOrDefault(x => x.FullName == people.Mother);
+
+            if (peopleMother != null)
+            {
+                peopleMotherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == peopleMother.Mother);
+                peopleMotherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == peopleMother.Father);
+                
+                
+            }
+        
+            var peopleFather = _context.Persons.FirstOrDefault(x => x.FullName == people.Father);
+
+            if (peopleFather != null)
+            {
+                peopleFatherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == peopleFather.Mother)!;
+                peopleFatherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == peopleFather.Father)!;
+            }
+        }
+        
 
         return Ok(cousins);
     }
+
 }
