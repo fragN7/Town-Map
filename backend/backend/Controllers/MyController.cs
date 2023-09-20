@@ -86,17 +86,28 @@ public class MyController : ControllerBase
         {
             throw new Exception("Person not found");
         }
+
+        Person? motherGrandMother = null;
+        Person? motherGrandFather = null;
+        Person? fatherGrandMother = null;
+        Person? fatherGrandFather = null;
         
         var mother = _context.Persons.FirstOrDefault(x => x.FullName == person.Mother);
-        
-        var motherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == mother!.Mother);
-        var motherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == mother!.Father);
+
+        if (mother != null)
+        {
+            motherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == mother!.Mother);
+            motherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == mother!.Father);
+        }
 
         var father = _context.Persons.FirstOrDefault(x => x.FullName == person.Father);
-        
-        var fatherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == father!.Mother);
-        var fatherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == father!.Father);
 
+        if (father != null)
+        {
+            fatherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == father!.Mother);
+            fatherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == father!.Father);
+        }
+        
         var grandParents = new List<Person>
         {
             motherGrandMother!,
