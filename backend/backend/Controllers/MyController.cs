@@ -1,6 +1,7 @@
 ﻿using backend.Model;
 using backend.Repo;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
@@ -58,7 +59,23 @@ public class MyController : ControllerBase
 
         return Ok(kids);
     }
-    
+
+    public async Task<IEnumerable<Person>> GetKidsAsync(string name)
+    {
+        var person = await _context.Persons.FirstOrDefaultAsync(x => x.FullName == name);
+
+        if (person == null)
+        {
+            throw new Exception("Person not found");
+        }
+
+        var kids = await _context.Persons
+            .Where(x => x.Mother == name || x.Father == name)
+            .ToListAsync();
+
+        return kids;
+    }
+
     [HttpGet]
     [Route("person/{name}/grandparents")]
     public ActionResult<ICollection<Person>> GetPersonGrandParents(string name)
@@ -129,11 +146,49 @@ public class MyController : ControllerBase
         return Ok(siblings);
     }
 
+    public async Task<IEnumerable<Person>> GetSiblingsAsync(string name)
+    {
+        var person = await _context.Persons.SingleOrDefaultAsync(x => x.FullName == name);
+
+        if (person == null)
+        {
+            throw new Exception("Person not found");
+        }
+
+        var mother = await _context.Persons.SingleOrDefaultAsync(x => x.FullName == person.Mother);
+        var father = await _context.Persons.SingleOrDefaultAsync(x => x.FullName == person.Father);
+
+        IEnumerable<Person> siblings;
+
+        if (mother != null && father == null)
+        {
+            siblings = await _context.Persons.Where(x => x.Mother == mother.FullName).ToListAsync();
+        }
+        else if (father != null && mother == null)
+        {
+            siblings = await _context.Persons.Where(x => x.Father == father.FullName).ToListAsync();
+        }
+        else if (mother == null && father == null)
+        {
+            siblings = Enumerable.Empty<Person>();
+        }
+        else
+        {
+            siblings = await _context.Persons
+                .Where(x => x.Father == father!.FullName && x.Mother == mother!.FullName)
+                .ToListAsync();
+        }
+
+        siblings = siblings.Where(x => x.FullName != name);
+
+        return siblings;
+    }
+
     [HttpGet]
     [Route("person/{name}/cousins/first")]
-    public ActionResult<IEnumerable<Person>> GetPersonFirstCousins(string name)
+    public async Task<ActionResult<IEnumerable<Person>>> GetPersonFirstCousins(string name)
     {
-        var person = _context.Persons.FirstOrDefault(x => x.FullName == name);
+        var person = await _context.Persons.FirstOrDefaultAsync(x => x.FullName == name);
 
         if (person == null)
         {
@@ -141,60 +196,33 @@ public class MyController : ControllerBase
         }
 
         var cousins = new List<Person>();
-        
-        Person? motherGrandMother = null;
-        Person? motherGrandFather = null;
-        Person? fatherGrandMother = null;
-        Person? fatherGrandFather = null;
 
-        var mother = _context.Persons.FirstOrDefault(x => x.FullName == person.Mother);
+        var mother = await _context.Persons.FirstOrDefaultAsync(x => x.FullName == person.Mother);
 
         if (mother != null)
         {
-            motherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == mother.Mother);
-            motherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == mother.Father);
+            var motherSiblings = await GetSiblingsAsync(mother.FullName);
+            foreach (var sibling in motherSiblings)
+            {
+                var siblingMotherKids = await GetKidsAsync(sibling.FullName);
+                cousins.AddRange(siblingMotherKids);
+            }
         }
-        
-        var father = _context.Persons.FirstOrDefault(x => x.FullName == person.Father);
+
+        var father = await _context.Persons.FirstOrDefaultAsync(x => x.FullName == person.Father);
 
         if (father != null)
         {
-            fatherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == father.Mother);
-            fatherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == father.Father);
-        }
-
-        var persons = _context.Persons.ToList();
-        foreach (var people in persons)
-        {
-            var peopleMother = _context.Persons.FirstOrDefault(x => x.FullName == people.Mother);
-
-            if (peopleMother != null)
+            var fatherSiblings = await GetSiblingsAsync(father.FullName);
+            foreach (var sibling in fatherSiblings)
             {
-                var peopleMotherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == peopleMother.Mother);
-                var peopleMotherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == peopleMother.Father);
-
-                if (peopleMotherGrandMother!.FullName == motherGrandMother!.FullName || peopleMotherGrandFather!.FullName == motherGrandFather!.FullName)
-                {
-                    cousins.Add(people);
-                }
-            }
-        
-            var peopleFather = _context.Persons.FirstOrDefault(x => x.FullName == people.Father);
-
-            if (peopleFather != null)
-            {
-                var peopleFatherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == peopleFather.Mother)!;
-                var peopleFatherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == peopleFather.Father)!;
-                
-                if (peopleFatherGrandMother!.FullName == fatherGrandMother!.FullName || peopleFatherGrandFather!.FullName == fatherGrandFather!.FullName)
-                {
-                    cousins.Add(people);
-                }
+                var siblingFatherKids = await GetKidsAsync(sibling.FullName);
+                cousins.AddRange(siblingFatherKids);
             }
         }
-        
 
         return Ok(cousins);
     }
+
 
 }
