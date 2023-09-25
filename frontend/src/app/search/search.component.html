@@ -1,0 +1,24 @@
+<!-- search.component.html -->
+<body bgcolor="black">
+  <div class="search-container">
+
+    <h2 class="text-center text-white star-wars-title">karaševo</h2> <!-- Add margin-top -->
+    <h6 class="text-center text-white star-wars-subtitle">Map</h6>
+
+    <input type="text" [(ngModel)]="searchQuery" (input)="filterPersons()" placeholder="Find a person...">
+    <ul *ngIf="searchQuery && filteredPersons.length > 0" class="dropdown">
+      <li *ngFor="let person of filteredPersons">
+        <a (click)="redirectToProfile(person)">{{ person.fullName }} ({{ person.nickName }})</a>
+      </li>
+    </ul>
+
+    <div class="footer">
+      <div class="bottom-mid-image">
+        <a href="https://rezidencija-luka.business.site" target="_blank">
+          <img [src]="'assets/rezidencija.png'" alt="Image" class="image">
+        </a>
+      </div>
+    </div>
+
+  </div>
+</body>

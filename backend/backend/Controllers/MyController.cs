@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
 
+[Route("api")]
 public class MyController : ControllerBase
 {
     private readonly DatabaseContext _context;
@@ -12,6 +13,13 @@ public class MyController : ControllerBase
     public MyController(DatabaseContext context)
     {
         _context = context;
+    }
+    
+    [HttpGet]
+    [Route("persons")]
+    public ActionResult<IEnumerable<Person>> GetPersons()
+    {
+        return Ok(_context.Persons.ToList());
     }
     
     [HttpGet]
@@ -60,7 +68,7 @@ public class MyController : ControllerBase
         return Ok(kids);
     }
 
-    public async Task<IEnumerable<Person>> GetKidsAsync(string name)
+    private async Task<IEnumerable<Person>> GetKidsAsync(string name)
     {
         var person = await _context.Persons.FirstOrDefaultAsync(x => x.FullName == name);
 
@@ -157,7 +165,7 @@ public class MyController : ControllerBase
         return Ok(siblings);
     }
 
-    public async Task<IEnumerable<Person>> GetSiblingsAsync(string name)
+    private async Task<IEnumerable<Person>> GetSiblingsAsync(string name)
     {
         var person = await _context.Persons.SingleOrDefaultAsync(x => x.FullName == name);
 

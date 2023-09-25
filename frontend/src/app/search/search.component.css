@@ -1,0 +1,97 @@
+body, html {
+  outline: none; /* Remove the default outline on the whole page */
+}
+
+/* search.component.css */
+.search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  background-color: black;
+}
+
+input {
+  width: 300px; /* Adjust the width as needed */
+  padding: 10px;
+  border: 3px solid #ccc;
+  border-radius: 5px;
+  margin: 0;
+  background-color: black;
+  color: white; /* Text color */
+  outline: none;
+}
+
+/* Use relative positioning for the container and absolute for the dropdown */
+.search-container {
+  position: relative;
+}
+
+ul.dropdown {
+  list-style: none;
+  padding: 0;
+  background-color: #101010;
+  border: 2px solid #969696;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 300px; /* Adjust the width as needed */
+  max-height: 200px; /* Set a max-height for the dropdown */
+  overflow-y: auto; /* Add scrollbars when needed */
+  position:absolute;
+  top: 290px; /* Position it 10px below the input */
+
+}
+
+ul.dropdown li {
+  padding: 10px;
+}
+
+ul.dropdown li a {
+  text-decoration: none;
+  color: white;
+  display: block;
+  transition: background-color 0.3s;
+}
+
+ul.dropdown li a:hover {
+  background-color: #414141;
+  cursor: pointer;
+}
+
+/* CSS for the footer */
+.footer {
+  background-color: #000; /* Background color for the footer */
+  text-align: center; /* Center align the content in the footer */
+}
+
+/* CSS for the image in the footer */
+.bottom-mid-image img {
+  max-width: 100%; /* Make the image responsive */
+  max-height: 225px;
+  height: auto; /* Maintain the image's aspect ratio */
+  margin-top: 200px;
+}
+
+.star-wars-title {
+  font-size: 64px; /* Adjust the font size to your preference */
+  letter-spacing: 1px; /* Adjust the letter spacing for the Star Wars logo effect */
+  text-transform: uppercase; /* Make the title uppercase */
+  font-weight: bold; /* Make the text bold */
+  font-family: 'Star Jedi', sans-serif; /* Use a Star Wars-like font (you may need to include the font) */
+  margin-top: 10px;
+  margin-bottom: 1px;
+  color: white;
+}
+
+.star-wars-subtitle {
+  font-size: 32px; /* Adjust the font size to your preference */
+  letter-spacing: 22px; /* Adjust the letter spacing for the Star Wars logo effect */
+  text-transform: uppercase; /* Make the title uppercase */
+  font-weight: lighter; /* Make the text bold */
+  font-family: 'Star Jedi', sans-serif; /* Use a Star Wars-like font (you may need to include the font) */
+  margin-top: 20px;
+  margin-bottom: 100px;
+  color: white;
+}
