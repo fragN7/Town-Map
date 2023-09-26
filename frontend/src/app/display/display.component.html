@@ -1,1 +1,78 @@
-<p>display works!</p>
+<div class="container">
+
+  <!-- Left Div - Person Information -->
+  <div class="left-div">
+    <div class="person-details">
+      <div class="image-container">
+        <img [src]="'assets/' + person.image" alt="Person's Image" class="person-image">
+      </div>
+      <h2>{{ person.fullName }} ({{ person.nickName }})</h2>
+      <p>Date of birth: {{ person.birthDate }} ({{ ageCalculator(person.birthDate) }} years)</p>
+      <p>Home: {{ person.street }} nr.{{person.houseNumber}}</p>
+      <p>Gender: {{ person.gender }}</p>
+      <p>Status: {{ person.status }}</p>
+      <p>Occupation: {{ person.occupation }}</p>
+    </div>
+  </div>
+
+
+  <div class="right-div">
+    <div class="relatives">
+      <div class="family-group">
+        <h3>Kids:</h3>
+        <div *ngFor="let kid of kids">
+          <ng-container *ngIf="kid">
+            <img [src]="'assets/' + kid.image" [alt]="kid.fullName" [title]="kid.fullName" (click)="redirectPerson(kid.fullName)" class="family-image">
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="family-group">
+        <h3>Parents:</h3>
+        <div *ngFor="let parent of parents">
+          <ng-container *ngIf="parent">
+            <img [src]="'assets/' + parent.image" [alt]="parent.fullName" [title]="parent.fullName" (click)="redirectPerson(parent.fullName)" class="family-image">
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="family-group">
+        <h3>Grand Parents:</h3>
+        <div *ngFor="let grandParent of grandParents">
+          <ng-container *ngIf="grandParent">
+            <img [src]="'assets/' + grandParent.image" [alt]="grandParent.fullName" [title]="grandParent.fullName" (click)="redirectPerson(grandParent.fullName)" class="family-image">
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="family-group">
+        <h3>Siblings:</h3>
+        <div *ngFor="let sibling of siblings">
+          <ng-container *ngIf="sibling">
+            <img [src]="'assets/' + sibling.image" [alt]="sibling.fullName" [title]="sibling.fullName" (click)="redirectPerson(sibling.fullName)" class="family-image">
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="family-group">
+        <h3>First Cousins:</h3>
+        <div *ngFor="let cousin of firstCousins">
+          <ng-container *ngIf="cousin">
+            <img [src]="'assets/' + cousin.image" [alt]="cousin.fullName" [title]="cousin.fullName" (click)="redirectPerson(cousin.fullName)" class="family-image">
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<div class="outer-container">
+  <button class="btn-16" (click)="redirectToMainScreen()">Go to main page</button>
+  <div class="bottom-mid-image">
+    <a href="https://rezidencija-luka.business.site" target="_blank">
+      <img [src]="'assets/rezidencija.png'" alt="Image" class="image">
+    </a>
+  </div>
+</div>

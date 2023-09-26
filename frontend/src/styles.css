@@ -2,5 +2,6 @@
 body, html {
   outline: none; /* Remove the default outline on the whole page */
   background-color: black;
+  color: white;
   font-family: "Times New Roman", sans-serif;
 }

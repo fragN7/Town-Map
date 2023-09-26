@@ -1,0 +1,129 @@
+.container {
+  width: 80%;
+  max-width: 800px; /* Adjust the maximum width as needed */
+  margin: 0 auto; /* Center the container horizontally */
+  padding: 20px;
+  border: 1px solid #fff; /* White outline */
+  display: flex;
+  flex-direction: row; /* Display children in a row layout */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  height: 73vh;
+}
+
+.person-image {
+  width: 225px; /* Adjust the width as needed */
+  height: 225px; /* Adjust the height as needed */
+  border-radius: 50%; /* Make the image round */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Add a subtle shadow to the image */
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px; /* Add spacing between image and text */
+}
+
+.family-group {
+  display: flex; /* Display family members horizontally */
+  gap: 10px; /* Add spacing between family members */
+}
+
+.family-image {
+  width: 65px; /* Adjust the width as needed */
+  height: 65px; /* Adjust the height as needed */
+  border: 2px solid #000; /* Add a border */
+  border-radius: 10px; /* Add rounded corners */
+  cursor: pointer;
+  transition: transform 0.2s ease; /* Add a subtle transform effect on hover */
+}
+
+.family-image:hover {
+  transform: scale(1.1); /* Scale up the image on hover */
+}
+
+
+.outer-container {
+  width: 80%;
+  max-width: 800px; /* Adjust the maximum width as needed */
+  margin: 0 auto; /* Center the container horizontally */
+  padding: 20px;
+  border: 1px solid #fff; /* White outline */
+  display: flex; /* Use flexbox to center content horizontally */
+  justify-content: space-between; /* Add space between button and container */
+  align-items: center; /* Center content vertically */
+  max-height: 100px;
+}
+
+.bottom-mid-image img {
+  margin-top: 2px;
+  max-width: 100%; /* Make the image responsive */
+  max-height: 100px;
+  height: auto;
+}
+
+.left-div, .right-div {
+  flex: 1; /* Make left and right divs take equal width */
+  padding: 20px;
+  text-align: center; /* Center text and content within divs */
+}
+
+
+.person-details {
+  /* Styling for person details, adjust as needed */
+}
+
+.relatives {
+  /* Styling for relatives section, adjust as needed */
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 16 */
+.btn-16 {
+  background: rgba(0, 0, 0, 0.1);
+  color: #fff;
+  position: relative;
+  z-index: 1;
+  padding: 20px 40px; /* Adjust padding for button size */
+  font-size: 20px; /* Adjust font size for button size */
+  display: flex; /* Use flexbox to center vertically */
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+  cursor: pointer; /* Add cursor pointer for better UX */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin-left: 10%;
+}
+
+.btn-16:after {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 100%;
+  top: 0;
+  left: 0;
+  direction: rtl;
+  z-index: -1;
+  background: #e0e5ec;
+  transition: all 0.3s ease;
+}
+
+.btn-16:hover {
+  background: #fff; /* Change background color on hover */
+  color: #000; /* Change text color on hover */
+}
+
+.btn-16:hover:after {
+  left: auto;
+  right: 0;
+  width: 100%;
+}
+.btn-16:active {
+  top: 2px;
+}
+
+
