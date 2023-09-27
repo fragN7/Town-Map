@@ -1,5 +1,6 @@
 ﻿using backend.Model;
 using backend.Repo;
+using backend.Validators;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,10 +10,12 @@ namespace backend.Controllers;
 public class MyController : ControllerBase
 {
     private readonly DatabaseContext _context;
+    private readonly PersonValidator _validator;
 
-    public MyController(DatabaseContext context)
+    public MyController(DatabaseContext context, PersonValidator validator)
     {
         _context = context;
+        _validator = validator;
     }
     
     [HttpGet]
@@ -104,16 +107,16 @@ public class MyController : ControllerBase
 
         if (mother != null)
         {
-            motherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == mother!.Mother);
-            motherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == mother!.Father);
+            motherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == mother.Mother);
+            motherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == mother.Father);
         }
 
         var father = _context.Persons.FirstOrDefault(x => x.FullName == person.Father);
 
         if (father != null)
         {
-            fatherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == father!.Mother);
-            fatherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == father!.Father);
+            fatherGrandMother = _context.Persons.FirstOrDefault(x => x.FullName == father.Mother);
+            fatherGrandFather = _context.Persons.FirstOrDefault(x => x.FullName == father.Father);
         }
         
         var grandParents = new List<Person>
@@ -243,5 +246,19 @@ public class MyController : ControllerBase
         return Ok(cousins);
     }
 
+    [HttpPost]
+    [Route("insert")]
+    public ActionResult<Person> AddPerson([FromBody] Person person)
+    {
+        var result = _validator.ValidatePerson(person);
+        if (result != string.Empty)
+        {
+            throw new Exception(result);
+        }
+
+        _context.Persons.Add(person);
+        _context.SaveChanges();
+        return Ok(person);
+    }
 
 }
